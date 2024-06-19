@@ -1,10 +1,9 @@
-from fastapi import FastAPI
 from datetime import datetime
 import pandas as pd
-import pickle
 from pathlib import Path
 from app.data_models import RawCarDataClassification, RawCarDataRegression
 import logging
+from .model_loader import load_classification_model, load_regression_model
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -13,17 +12,6 @@ logger = logging.getLogger(__name__)
 __version__ = "0.1.0"
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent
-
-# assume we have a trained model
-with open(
-    f"{BASE_DIR}/trained_models/product_tier_prediction-{__version__}.pkl", "rb"
-) as f:
-    product_tier_classifier = pickle.load(f)
-
-with open(
-    f"{BASE_DIR}/trained_models/detail_views_regression-{__version__}.pkl", "rb"
-) as f:
-    detail_views_regressor = pickle.load(f)
 
 
 def transform_data_classification(data: RawCarDataClassification) -> dict:
@@ -41,7 +29,6 @@ def transform_data_classification(data: RawCarDataClassification) -> dict:
 
     Notes:
         - Assumes created_date is in YYYY-MM-DD format.
-        - Handles optional columns (created_date, search_views, detail_views).
         - Calculates derived features like car_life, search_views_per_day, detail_views_per_day.
     """
     try:
@@ -84,7 +71,6 @@ def transform_data_regression(data: RawCarDataRegression) -> dict:
         ValueError: If required fields are missing or invalid.
 
     Notes:
-        - Handles optional columns (created_date, search_views).
         - Assumes created_date is in YYYY-MM-DD format.
         - Calculates derived features like car_age.
     """
@@ -133,6 +119,7 @@ def predict_tier_classification(transformed_data: dict) -> dict:
     # Make prediction using the transformed data
     try:
         transformed_df = pd.DataFrame([transformed_data])
+        product_tier_classifier = load_classification_model(__version__)
         prediction = product_tier_classifier.predict(transformed_df)[0]
 
         # Map numeric prediction to product tier
@@ -157,6 +144,7 @@ def predict_detail_views(transformed_data: dict) -> float:
     try:
         # Make prediction using the transformed data
         transformed_df = pd.DataFrame([transformed_data])
+        detail_views_regressor = load_regression_model(__version__)
         prediction = detail_views_regressor.predict(transformed_df)[0]
         return float(prediction)  # Convert to float if necessary
     except Exception as e:
