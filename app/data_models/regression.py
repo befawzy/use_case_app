@@ -9,10 +9,9 @@ class RawCarDataRegression(BaseModel):
     first_zip_digit: int
     first_registration_year: int
     stock_days: int
-    created_date: Optional[str]
-    deleted_date: Optional[str]
-    search_views: Optional[float]
-    ctr: Optional[str]
+    created_date: str
+    search_views: int
+    ctr: float
 
     class Config:
         arbitrary_types_allowed = True
