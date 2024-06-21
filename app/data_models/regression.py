@@ -15,7 +15,7 @@ class RawCarDataRegression(BaseModel):
 
     class Config:
         arbitrary_types_allowed = True
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "product_tier": "Plus",
                 "make_name": "BMW",
@@ -23,5 +23,9 @@ class RawCarDataRegression(BaseModel):
                 "first_zip_digit": 8,
                 "first_registration_year": 2020,
                 "stock_days": 0,
+                "created_date": "2024-06-01",
+                "search_views": 100,
+                "stock_days": 10,
+                "ctr": 2.0,
             }
         }

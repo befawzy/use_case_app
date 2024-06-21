@@ -6,4 +6,4 @@ class ProductTierPrediction(BaseModel):
 
 
 class DetailViewsPrediction(BaseModel):
-    detail_views: int
+    detail_views: float

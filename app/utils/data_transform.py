@@ -124,7 +124,7 @@ def predict_tier_classification(transformed_data: dict) -> dict:
 
         # Map numeric prediction to product tier
         product_tier = {0: "Basic", 1: "Plus", 2: "Premium"}.get(prediction, "Unknown")
-        return {"predicted_class": product_tier}
+        return {"product_tier": product_tier}
     except Exception as e:
         logger.error(f"Error during classification: {e}")
         raise ValueError(f"Error during classification: {str(e)}")
@@ -146,6 +146,6 @@ def predict_detail_views(transformed_data: dict) -> float:
         transformed_df = pd.DataFrame([transformed_data])
         detail_views_regressor = load_regression_model(__version__)
         prediction = detail_views_regressor.predict(transformed_df)[0]
-        return float(prediction)  # Convert to float if necessary
+        return {"detail_views": float(prediction)}  # Convert to float if necessary
     except Exception as e:
         raise ValueError(f"Error predicting regression: {str(e)}")

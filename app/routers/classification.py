@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-from app.data_models import RawCarDataClassification
+from app.data_models import RawCarDataClassification, ProductTierPrediction
 from app.utils.data_transform import (
     transform_data_classification,
     predict_tier_classification,
@@ -9,11 +8,7 @@ from app.utils.data_transform import (
 router = APIRouter()
 
 
-class PredictionRequest(BaseModel):
-    data: RawCarDataClassification
-
-
-@router.post("/product_tier_classification/")
+@router.post("/product_tier_classification/", response_model=ProductTierPrediction)
 def predict_class(data: RawCarDataClassification):
     try:
         transformed_data = transform_data_classification(data)

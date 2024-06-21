@@ -15,7 +15,7 @@ class RawCarDataClassification(BaseModel):
 
     class Config:
         arbitrary_types_allowed = True
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "make_name": "VW",
                 "price": 64605,
@@ -25,5 +25,6 @@ class RawCarDataClassification(BaseModel):
                 "created_date": "2023-06-25",
                 "search_views": 100,
                 "detail_views": 50,
+                "ctr": 2.0,
             }
         }
